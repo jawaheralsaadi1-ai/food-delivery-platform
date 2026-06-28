@@ -1,7 +1,7 @@
 package com.fooddelivery.dto.request;
 
 import com.fooddelivery.entities.DeliveryDriver;
-//import com.fooddelivery.utils.HelperUtils;
+import com.fooddelivery.utils.HelperUtils;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -36,7 +36,7 @@ public class DriverRequestDTO {
                 .email(this.email)
                 .phone(this.phone)
                 .passwordHash(this.password)
-              //  .driverCode(HelperUtils.generateCode("DRV"))
+               .driverCode(HelperUtils.generateCode("DRV"))
                 .vehicleType(this.vehicleType)
                 .vehiclePlate(this.vehiclePlate)
                 .currentLat(0.0)

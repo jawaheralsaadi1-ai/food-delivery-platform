@@ -1,7 +1,7 @@
 package com.fooddelivery.dto.request;
 
 import com.fooddelivery.entities.Customer;
-//import com.fooddelivery.utils.HelperUtils;
+import com.fooddelivery.utils.HelperUtils;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -33,7 +33,7 @@ public class CustomerRequestDTO {
                 .email(this.email)
                 .phone(this.phone)
                 .passwordHash(this.password) // hash in service
-                //   .customerCode(HelperUtils.generateCode("CUST"))
+                .customerCode(HelperUtils.generateCode("CUST"))
                 .loyaltyPoints(0)
                 .isActive(true)
                 .build();
