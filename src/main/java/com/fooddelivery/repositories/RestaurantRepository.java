@@ -30,4 +30,8 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Integer>
 
     @Query("SELECT r FROM Restaurant r WHERE r.isActive = true")
     List<Restaurant> findAllActive();
+    // add for getNearby() method
+    @Query("SELECT r FROM Restaurant r WHERE r.latitude BETWEEN :minLat AND :maxLat AND r.longitude BETWEEN :minLng AND :maxLng AND r.isActive = true")
+    List<Restaurant> findNearby(@Param("minLat") double minLat, @Param("maxLat") double maxLat,
+                                @Param("minLng") double minLng, @Param("maxLng") double maxLng);
 }
