@@ -5,15 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 
 @Data @Builder
-public class AddressResponseDTO {
+public class CustomerAddressResponseDTO {
     private Integer id;
     private String street;
     private String city;
     private String building;
     private Boolean isDefault;
 
-    public static AddressResponseDTO fromEntity(CustomerAddress a) {
-        return AddressResponseDTO.builder()
+    public static CustomerAddressResponseDTO fromEntity(CustomerAddress a) {
+        return CustomerAddressResponseDTO.builder()
                 .id(a.getId())
                 .street(a.getStreet())
                 .city(a.getCity())
