@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+
 public interface DeliveryRepository extends JpaRepository<Delivery, Integer> {
 
     @Query("SELECT d FROM Delivery d WHERE d.driver.id = :driverId AND d.status = :status AND d.isActive = true")
@@ -33,7 +34,7 @@ public interface DeliveryRepository extends JpaRepository<Delivery, Integer> {
     @Query("SELECT COUNT(d) FROM Delivery d WHERE d.driver.id = :driverId AND d.status = 'DELIVERED' AND d.isActive = true")
     Long countCompletedByDriverId(@Param("driverId") Integer driverId);
 
-    @Query(name = "SELECT COALESCE(AVG(TIMESTAMPDIFF(MINUTE, d.assigned_at, d.delivered_at)), 0) FROM deliveries d WHERE d.driver_id = :driverId AND d.status = 'DELIVERED' AND d.is_active = true",
+    @Query(value = "SELECT COALESCE(AVG(TIMESTAMPDIFF(MINUTE, d.assigned_at, d.delivered_at)), 0) FROM deliveries d WHERE d.driver_id = :driverId AND d.status = 'DELIVERED' AND d.is_active = true",
             nativeQuery = true)
     Double avgDeliveryTimeByDriverId(@Param("driverId") Integer driverId);
 
