@@ -1,27 +1,26 @@
 package com.fooddelivery.exceptions;
 
+/**
+ * Thrown when a create/update operation would violate a uniqueness constraint
+ * against an existing, still-active record.
+ *
+ * Examples:
+ *   - Registering an email that already exists on an active Customer
+ *   - Creating a second Payment for the same Order
+ *
+ * Always maps to HTTP 409 Conflict.
+ * NOTE: only conflicts with *active* records count; a soft-deleted record
+ * with the same email does NOT block re-registration.
+ */
 public class DuplicateResourceException extends RuntimeException {
 
-    private final String resourceName;
-    private final String fieldName;
-    private final Object fieldValue;
-
-    public DuplicateResourceException(String resourceName, String fieldName, Object fieldValue) {
-        super(String.format("%s already exists with %s: '%s'", resourceName, fieldName, fieldValue));
-        this.resourceName = resourceName;
-        this.fieldName = fieldName;
-        this.fieldValue = fieldValue;
+    // 1. Free-form message
+    public DuplicateResourceException(String message) {
+        super(message);
     }
 
-    public String getResourceName() {
-        return resourceName;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public Object getFieldValue() {
-        return fieldValue;
+    // 2. Structured: "X with <field> '<value>' already exists"
+    public DuplicateResourceException(String resourceName, String field, String value) {
+        super(resourceName + " with " + field + " '" + value + "' already exists");
     }
 }
