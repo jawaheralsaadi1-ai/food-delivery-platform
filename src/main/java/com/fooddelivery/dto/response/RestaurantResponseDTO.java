@@ -19,6 +19,9 @@ public class RestaurantResponseDTO {
     private Integer ownerId;
     private String ownerName;
     private LocalDateTime createdDate;
+    //add
+    private Double latitude;
+    private Double longitude;
 
     public static RestaurantResponseDTO fromEntity(Restaurant r) {
         return RestaurantResponseDTO.builder()
@@ -31,6 +34,10 @@ public class RestaurantResponseDTO {
                 .minOrderAmount(r.getMinOrderAmount())
                 .deliveryFee(r.getDeliveryFee())
                 .acceptingOrders(r.getAcceptingOrders())
+                //update
+                .latitude(r.getLatitude())
+                .longitude(r.getLongitude())
+                //
                 .ownerId(r.getOwner() != null ? r.getOwner().getId() : null)
                 .ownerName(r.getOwner() != null
                         ? r.getOwner().getFirstName() + " " + r.getOwner().getLastName()
