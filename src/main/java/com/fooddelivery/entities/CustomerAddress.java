@@ -20,6 +20,10 @@ public class CustomerAddress {
     private String city;
     private String building;
 
+    //add
+    private Double latitude;
+    private Double longitude;
+
     @Builder.Default
     private Boolean isDefault = false;
 
