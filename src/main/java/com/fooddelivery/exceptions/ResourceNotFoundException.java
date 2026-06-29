@@ -2,26 +2,18 @@ package com.fooddelivery.exceptions;
 
 public class ResourceNotFoundException extends RuntimeException {
 
-    private final String resourceName;
-    private final String fieldName;
-    private final Object fieldValue;
-
-    public ResourceNotFoundException(String resourceName, String fieldName, Object fieldValue) {
-        super(String.format("%s not found with %s: '%s'", resourceName, fieldName, fieldValue));
-        this.resourceName = resourceName;
-        this.fieldName = fieldName;
-        this.fieldValue = fieldValue;
+    // 1. Free-form message — for email / code / custom lookups
+    public ResourceNotFoundException(String message) {
+        super(message);
     }
 
-    public String getResourceName() {
-        return resourceName;
+    // 2. Standard "X with id N not found"
+    public ResourceNotFoundException(String resourceName, Integer id) {
+        super(resourceName + " with id " + id + " not found");
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public Object getFieldValue() {
-        return fieldValue;
+    // 3. Generic field lookup — "X with <field> '<value>' not found"
+    public ResourceNotFoundException(String resourceName, String field, String value) {
+        super(resourceName + " with " + field + " '" + value + "' not found");
     }
 }
