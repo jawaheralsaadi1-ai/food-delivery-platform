@@ -172,7 +172,7 @@ public class RestaurantService {
 
     // ── Analytics ─────────────────────────────────────────────────────────
 
-     public Map<String, Object> getAnalytics(Integer restaurantId, LocalDateTime fromDate, LocalDateTime toDate) {
+    public Map<String, Object> getAnalytics(Integer restaurantId, LocalDateTime fromDate, LocalDateTime toDate) {
         findActiveEntityById(restaurantId);
         Double avgRating   = reviewRepo.avgRatingByRestaurantId(restaurantId);
         Long   totalOrders = orderRepo.countCompletedOrdersByRestaurantId(restaurantId);
@@ -180,7 +180,10 @@ public class RestaurantService {
 
         return Map.of(
                 "restaurantId", restaurantId,
-                "averageRating", avgRating != null ? avgRating : 0.0);
+                "averageRating", avgRating != null ? avgRating : 0.0,
+                "totalCompletedOrders", totalOrders != null ? totalOrders : 0L,
+                "totalRevenue", revenue != null ? revenue : 0.0
+        );
     }
 
     // ── Internal ──────────────────────────────────────────────────────────
