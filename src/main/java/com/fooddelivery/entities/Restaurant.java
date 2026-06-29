@@ -26,6 +26,12 @@ public class Restaurant {
 
     private String closingTime;
 
+// add to getNearby() endpoint
+    @Column(nullable = false)
+    private Double latitude;
+    @Column(nullable = false)
+    private Double longitude;
+//
     @Builder.Default
     private Double minOrderAmount = 0.0;
 
