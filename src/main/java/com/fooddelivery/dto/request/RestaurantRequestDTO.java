@@ -25,7 +25,13 @@ public class RestaurantRequestDTO {
 
     @PositiveOrZero(message = "Delivery fee must be zero or positive")
     private Double deliveryFee = 0.0;
+    //add
+    @NotBlank(message = "Latitude is required")
+    private Double latitude;
 
+    @NotBlank(message = "Longitude is required")
+
+    private Double longitude;
     public Restaurant toEntity() {
         return Restaurant.builder()
                 .name(this.name)
@@ -35,8 +41,13 @@ public class RestaurantRequestDTO {
                 .closingTime(this.closingTime)
                 .minOrderAmount(this.minOrderAmount != null ? this.minOrderAmount : 0.0)
                 .deliveryFee(this.deliveryFee != null ? this.deliveryFee : 0.0)
+                //update
+                .latitude(this.latitude)
+                .longitude(this.longitude)
+                //
                 .acceptingOrders(true)
                 .isActive(true)
                 .build();
+
     }
 }
