@@ -2,6 +2,7 @@ package com.fooddelivery.exceptions;
 
 public class DuplicateResourceException extends RuntimeException {
 
+    // 1. Free-form message
     public DuplicateResourceException(String message) {
         super(message);
     }
