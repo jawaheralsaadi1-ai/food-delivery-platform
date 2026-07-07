@@ -44,14 +44,14 @@ public class Customer {
     private Boolean isActive = true;
 
     //  Relationships
-   // @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-   // private List<CustomerAddress> addresses;
+   @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+   private List<CustomerAddress> addresses;
 
-   // @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-   // private List<Order> orders;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Order> orders;
 
-   // @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    //private List<Review> reviews;
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<Review> reviews;
 
     @PrePersist
     protected void onCreate() {
