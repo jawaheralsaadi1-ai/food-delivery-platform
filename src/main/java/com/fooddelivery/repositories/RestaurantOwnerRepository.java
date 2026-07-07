@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface RestaurantOwnerRepository extends JpaRepository<RestaurantOwner, Integer> {
@@ -14,4 +15,7 @@ public interface RestaurantOwnerRepository extends JpaRepository<RestaurantOwner
 
     @Query("SELECT o FROM RestaurantOwner o WHERE o.id = :id AND o.isActive = true")
     Optional<RestaurantOwner> findActiveById(@Param("id") Integer id);
+
+    @Query("SELECT o FROM RestaurantOwner o WHERE o.isActive = true")
+    List<RestaurantOwner> findAllActive();
 }
