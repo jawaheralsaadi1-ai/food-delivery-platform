@@ -1,11 +1,12 @@
-
 package com.fooddelivery.services;
 
 import com.fooddelivery.dto.request.ComboMealRequestDTO;
 import com.fooddelivery.dto.request.MenuItemRequestDTO;
+import com.fooddelivery.dto.request.RestaurantOwnerRequestDTO;
 import com.fooddelivery.dto.request.RestaurantRequestDTO;
 import com.fooddelivery.dto.response.*;
 import com.fooddelivery.entities.*;
+import com.fooddelivery.exceptions.DuplicateResourceException;
 import com.fooddelivery.exceptions.ResourceNotFoundException;
 import com.fooddelivery.repositories.*;
 import com.fooddelivery.utils.HelperUtils;
@@ -29,12 +30,48 @@ public class RestaurantService {
     private final ReviewRepository reviewRepo;
     private final OrderRepository orderRepo;
 
+    // ── Owner registration & lookup ──────────────────────────────────────
+
+    @Transactional
+    public RestaurantOwnerResponseDTO registerOwner(RestaurantOwnerRequestDTO dto) {
+        ownerRepo.findByEmail(dto.getEmail()).ifPresent(existing -> {
+            throw new DuplicateResourceException("RestaurantOwner", "email", dto.getEmail());
+        });
+
+        RestaurantOwner owner = dto.toEntity();
+        owner.setCreatedDate(LocalDateTime.now());
+        owner.setUpdatedDate(LocalDateTime.now());
+        owner.setIsActive(true);
+
+        return RestaurantOwnerResponseDTO.fromEntity(ownerRepo.save(owner));
+    }
+
+    public List<RestaurantOwnerResponseDTO> getAllOwners() {
+        return ownerRepo.findAllActive().stream()
+                .map(RestaurantOwnerResponseDTO::fromEntity)
+                .collect(Collectors.toList());
+    }
+
+    public RestaurantOwnerResponseDTO getOwnerById(Integer ownerId) {
+        return RestaurantOwnerResponseDTO.fromEntity(findActiveOwnerById(ownerId));
+    }
+
+    public RestaurantOwnerResponseDTO getOwnerByEmail(String email) {
+        RestaurantOwner owner = ownerRepo.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("RestaurantOwner", "email", email));
+        return RestaurantOwnerResponseDTO.fromEntity(owner);
+    }
+
+    private RestaurantOwner findActiveOwnerById(Integer id) {
+        return ownerRepo.findActiveById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("RestaurantOwner", id));
+    }
+
     // ── Create
 
     @Transactional
     public RestaurantResponseDTO createRestaurant(RestaurantRequestDTO dto, Integer ownerId) {
-        RestaurantOwner owner = ownerRepo.findActiveById(ownerId)
-                .orElseThrow(() -> new ResourceNotFoundException("RestaurantOwner", ownerId));
+        RestaurantOwner owner = findActiveOwnerById(ownerId);
         Restaurant restaurant = dto.toEntity();
         restaurant.setOwner(owner);
         return RestaurantResponseDTO.fromEntity(restaurantRepo.save(restaurant));
@@ -62,12 +99,15 @@ public class RestaurantService {
     }
 
     public List<RestaurantResponseDTO> getNearby(double lat, double lng, double radiusKm) {
-        return restaurantRepo.findAllActive().stream()
-                .filter(r -> {
-                    // restaurants don't have lat/lng in spec; filter by acceptance as proxy
-                    // In a real system you'd store lat/lng on Restaurant
-                    return r.getAcceptingOrders();
-                })
+        // Roughly 1 degree of latitude ~= 111km; use a generous bounding box as a cheap
+        // pre-filter at the DB level, then apply the exact haversine distance in memory.
+        double latDelta = radiusKm / 111.0;
+        double lngDelta = radiusKm / (111.320 * Math.max(Math.cos(Math.toRadians(lat)), 0.000001));
+
+        return restaurantRepo.findNearby(lat - latDelta, lat + latDelta, lng - lngDelta, lng + lngDelta)
+                .stream()
+                .filter(r -> r.getLatitude() != null && r.getLongitude() != null)
+                .filter(r -> HelperUtils.calculateDistance(lat, lng, r.getLatitude(), r.getLongitude()) <= radiusKm)
                 .map(RestaurantResponseDTO::fromEntity)
                 .collect(Collectors.toList());
     }
